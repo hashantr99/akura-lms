@@ -4,6 +4,7 @@ import { CircleDollarSign, File, LayoutDashboard, ListChecks } from "lucide-reac
 
 import { db } from "@/lib/db";
 import { IconBadge } from "@/components/icon-badge";
+import { Banner } from "@/components/banner";
 
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
@@ -12,6 +13,7 @@ import { CategoryForm } from "./_components/category-form";
 import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
 import { ChaptersForm } from "./_components/chapters-form";
+import { Actions } from "./_components/actions";
 
 const CourseIdPage = async ({
     params
@@ -65,9 +67,17 @@ const CourseIdPage = async ({
     const totalFields = requiredFields.length;
     const completedFields = requiredFields.filter(Boolean).length;
 
-    const completionText = `(${completedFields}/${totalFields})`
+    const completionText = `(${completedFields}/${totalFields})`;
+
+    const isComplete = requiredFields.every(Boolean);
 
     return ( 
+        <>
+        {!course.isPublished && (
+            <Banner 
+                label="This course is unpublished. It will not be visible to the students."
+            />
+        )}
         <div className="p-6">
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-y-2">
@@ -78,6 +88,11 @@ const CourseIdPage = async ({
                         Complete all fields {completionText}
                     </span>
                 </div>
+                <Actions 
+                    disabled={!isComplete}
+                    courseId={params.courseId}
+                    isPublished={course.isPublished}
+                />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
                 <div>
@@ -147,6 +162,7 @@ const CourseIdPage = async ({
                 </div>
             </div>
         </div>
+        </>
      );
 }
  
